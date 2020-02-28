@@ -4,6 +4,7 @@ scRNA-seq and scATAC-seq datasets were produced with 10x Genomics (v3) technolog
 Since multiple donors were mixed in the same lane, donor demultiplexing based on genotype required. 
 
 *scRNA-seq*
+
 Note: Input fastq file names in the following format:
 sample1_S1_L001_R1_001.fastq.gz, sample1_S1_L001_R2_001.fastq.gz
 
@@ -27,6 +28,7 @@ vireo v0.1.8
 vireo -c <cell_data> -N <n_donors> -o <out_dir>
 
 *scATAC-seq*
+
 Note: Input fastq file names in the following format:
 sample1_S1_L001_I1_001.fastq.gz
 sample1_S1_L001_R1_001.fastq.gz
