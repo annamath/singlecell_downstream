@@ -115,6 +115,54 @@ seurat_to_monocle <- function(seurat_object){
 #Create seurat object from the 10x matrices
 sample1matrix <- Read10X(data.dir=args$tenxrun1, gene.column = 2, unique.features = TRUE)
 sample2matrix <- Read10X(data.dir=args$tenxrun1, gene.column = 2, unique.features = TRUE)
+
+######################################################
+#Filter out genes from sex chromosomes X & Y
+# Convert gene names to entrez ids 
+
+entrez_ids <- mapIds(x = org.Hs.eg.db,
+       keytype = "SYMBOL",
+       keys = c(rownames(sample1matrix), rownames(sample2matrix)),
+       filter = "SYMBOL",
+       uniqueRow=TRUE,
+       column = "ENTREZID")
+entrez_ids <- entrez_ids[!is.na(entrez_ids)]
+## Bimap interface
+x <- org.Hs.egCHR
+# Get the entrez gene identifiers that are mapped to a chromosome
+mapped_genes <- mappedkeys(x)
+# Convert to a list
+xx <- as.list(x[mapped_genes])
+
+x_genes <- c()
+y_genes <- c()
+for (i in entrez_ids){
+  chr <- xx[i]
+  if(chr=="X"){
+    x_genes <- c(x_genes, i)
+  }
+  else if(chr=="Y"){
+    y_genes <- c(y_genes, i)
+  }
+  else{
+  }
+}
+
+sex_gene_symbols <- mapIds(x = org.Hs.eg.db,
+       keytype = "ENTREZID",
+       keys = c(x_genes, y_genes),
+       filter = "ENTREZID",
+       uniqueRow=TRUE,
+       column = "SYMBOL")
+
+#Remove chromosome X and Y genes
+sample1matrix <- sample1matrix[!rownames(sample1matrix) %in% sex_gene_symbols, ]
+sample2matrix <- sample2matrix[!rownames(sample2matrix) %in% sex_gene_symbols, ]
+
+# Integrate data from the 2 datasets
+seurat_final(seurat_matrix=sample1matrix, min_cells=2, nfeat_min=500, nfeat_max=5000, selection_method = 'vst', num_bin=100, nfeatures=2000)
+sample1Seurat <- final_seurat
+
 combined_seurat_final(sample1matrix, sample2matrix, 2, 500, args$projectname1, args$projectname2, args$projectname)
 
 ######################################################
