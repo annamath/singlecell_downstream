@@ -69,7 +69,7 @@ combined_seurat_final <- function(seurat1_matrix,
   #nFeature_RNA -->  # of detected genes
   #did not filter for high gene detection and thus douplets, will do based on genotype (vireo output)
   a <<- as.numeric(nfeat_min)
-  combined_seurat <- subset(x = combined_seurat, subset = nFeature_RNA > a)
+  combined_seurat <- subset(x = combined_seurat, subset = nFeature_RNA > a & percent.mt < 10)
   combined_seurat <- SCTransform(combined_seurat, vars.to.regress = "percent.mt", verbose = FALSE)
   r <- VariableFeaturePlot(object = combined_seurat)
   
