@@ -160,9 +160,6 @@ sample1matrix <- sample1matrix[!rownames(sample1matrix) %in% sex_gene_symbols, ]
 sample2matrix <- sample2matrix[!rownames(sample2matrix) %in% sex_gene_symbols, ]
 
 # Integrate data from the 2 datasets
-seurat_final(seurat_matrix=sample1matrix, min_cells=2, nfeat_min=500, nfeat_max=5000, selection_method = 'vst', num_bin=100, nfeatures=2000)
-sample1Seurat <- final_seurat
-
 combined_seurat_final(sample1matrix, sample2matrix, 2, 500, args$projectname1, args$projectname2, args$projectname)
 
 ######################################################
